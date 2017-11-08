@@ -6,7 +6,7 @@ import (
   "github.com/mmcdole/gofeed"
 )
 
-const SearchTextUrl = "http://b.hatena.ne.jp/search/text"
+var SEARCH_TEXT_URL string = "http://b.hatena.ne.jp/search/text"
 
 type SearchParameter struct {
   Query string
@@ -29,18 +29,34 @@ type FeedItem struct {
 
 func SearchTextRss(param *SearchParameter) (*RssFeed){
   values := url.Values{}
-  values.Set("q", param.Query)
-  values.Set("sort", param.Sort)
-  values.Set("threshold", strconv.Itoa(param.Threshold))
-  values.Set("date_begin", param.DateBegin)
-  values.Set("date_end", param.DateEnd)
-//  values.Set("safe", param.Safe)
   values.Set("mode", "rss")
-  url := SearchTextUrl + "?" + values.Encode()
-  return feed(url)
+  values.Set("q", param.Query)
+
+  if param.Sort != "" {
+    values.Set("sort", param.Sort)
+  }
+  
+  if param.Threshold > 0 {
+    values.Set("threshold", strconv.Itoa(param.Threshold))
+  }
+
+  if param.DateBegin != "" {
+    values.Set("date_begin", param.DateBegin)
+  }
+
+  if param.DateEnd != "" {
+    values.Set("date_end", param.DateEnd)
+  }
+
+  if param.Safe ==  false {
+    values.Set("safe", "off")
+  }
+
+  url := SEARCH_TEXT_URL + "?" + values.Encode()
+  return createFeed(url)
 }
 
-func feed(url string) (*RssFeed){
+func createFeed(url string) (*RssFeed){
   fp := gofeed.NewParser()
   feed, _ := fp.ParseURL(url)
   items := feed.Items
