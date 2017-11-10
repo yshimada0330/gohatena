@@ -1,5 +1,8 @@
 # gohatena
- Hatena Rss Search
+
+[![Build Status](https://travis-ci.org/yshimada0330/gohatena.svg?branch=master)](https://travis-ci.org/yshimada0330/gohatena)
+
+Hatena Rss Search
  
 # usage
 
