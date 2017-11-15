@@ -24,6 +24,19 @@ func TestSearchTextRss(t *testing.T) {
   }
 }
 
+func TestEntryListRssByUrl(t *testing.T) {
+  ts := httptest.NewServer(http.HandlerFunc(rssHandler()))
+  defer ts.Close()
+
+  ENTRY_LIST_URL = ts.URL
+  param := EntryListParameter{Threshold: 3, Sort: "recent"}
+  feed := EntryListRssByUrl("https://example.com/", &param)
+
+  if feed.Items[0].Title != "タイトル1" {
+    t.Fatalf("Error Title")
+  }
+}
+
 func rssHandler() func(http.ResponseWriter, *http.Request) {
   return func(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Content-Type", "text/html")
